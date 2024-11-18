@@ -1,293 +1,286 @@
-
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    
-<meta charset="UTF-8">
-
-    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    
-<title>
-Prediction Display
-</title>
-
-    
-<style>
-
-        /* Body styling */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Web </title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styling */
         body {
-            margin: 0;
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #1a1a1a;
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d0d0d;
+            color: #00ff00;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            color: #FFFF00;
-            overflow: hidden;
-        }
-
-        /* Container styling */
-        .container {
-            width: 500px;
-            background: #121212;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-
-        /* Header styling */
-        h1 {
-            font-size: 2em;
-            color: #FFFF00;
-            text-shadow: 0 0 10px #0000FF;
             margin: 0;
+            overflow: hidden;
+            animation: backgroundAnimation 10s infinite alternate;
         }
 
-        /* Boxes styling */
+        @keyframes backgroundAnimation {
+            0% { background-color: #0d0d0d; }
+            50% { background-color: #1a1a1a; }
+            100% { background-color: #0d0d0d; }
+        }
+
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.5);
+            text-align: center;
+            max-width: 300px; /* Reduced width */
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
         .box {
-            background: #1e1e1e;
-            padding: 15px;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #2e2e2e;
+            border: 2px solid #00ff00;
             border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #00FFFF;
-            color: #FFFF00;
-            font-size: 1.2em;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
-            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            transition: transform 0.3s;
+            font-size: 1.2rem;
+            max-width: 250px; /* Further reduced width */
+            margin: 5px auto; /* Centered box */
         }
 
         .box:hover {
             transform: scale(1.05);
-            background-color: #262626;
         }
 
-        /* Timer styling */
-        #timer {
-            font-size: 2em;
-            color: #FF0000;
-            text-shadow: 0 0 10px #FFFF00;
+        #timerDisplay, #periodDisplay, #resultDisplay {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
         }
 
-        /* History box styling */
-        .history-box {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 8px;
+        /* Popup styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1e1e1e;
+            border: 2px solid #00ff00;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+            z-index: 1000;
+            padding: 20px;
+            animation: popIn 0.5s forwards;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .popup-header {
+            font-size: 1.5rem;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .popup-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #00ff00;
+            text-align: center;
+            padding: 8px;
+            color: #00ff00;
+        }
+
+        th {
+            background-color: #00ff00;
+            color: #1e1e1e;
+        }
+
+        .close-button {
+            background-color: #00ff00;
+            color: #1e1e1e;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
             margin-top: 10px;
-            border: 1px solid #FF0000;
-            max-height: 150px;
-            overflow-y: auto;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
         }
 
-        .history-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            color: #FFFF00;
+        .close-button:hover {
+            background-color: #007bff;
+        }
+
+        /* New History Box Design */
+        .history {
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #3e3e3e; /* New background color */
+            border: 2px solid #00ff00; /* Keep the green border */
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            font-family: 'Courier New', Courier, monospace; /* Hacking style font */
+            font-size: 1rem; /* Smaller font for a more compact look */
+            position: relative; /* Added for positioning */
+        }
+
+        .history-title {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
         }
 
         .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            margin-bottom: 5px;
-            background: #121212;
-            border-radius: 5px;
-            color: #FFFF00;
-            font-weight: bold;
+            margin: 5px 0;
+            padding: 4px;
+            border-bottom: 1px solid #007bff;
+            transition: background-color 0.3s;
         }
 
-        /* Animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+        .history-item:hover {
+            background-color: rgba(0, 255, 0, 0.2);
         }
 
-        .result-update {
-            animation: pulse 1s ease infinite;
-        }
-    
-</style>
-
-
+    </style>
 </head>
-
-
 <body>
 
+    <div class="container">
+        <div class="title">Free Web</div>
 
+        <div class="box">
+            <div id="periodDisplay">Period: Loading...</div>
+        </div>
 
-<div class="container">
+        <div class="box">
+            <div id="timerDisplay">00:30</div>
+        </div>
 
-    
-<h1>
-THIS MOD CRACK BY :- @TEAM_EARNING_009
-</h1>
+        <div class="box">
+            <div id="resultDisplay">Result: Waiting...</div>
+        </div>
 
+        <div class="history" id="historyList">
+            <div class="history-title">History:</div>
+        </div>
+    </div>
 
-    
-<div class="box">
+    <!-- Popup Structure -->
+    <div class="popup" id="resultPopup">
+        <div class="popup-header">New Result</div>
+        <table class="popup-table">
+            <thead>
+                <tr>
+                    <th>Period Number</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="popupBody">
+                <!-- Results will be inserted here -->
+            </tbody>
+        </table>
+        <button class="close-button" onclick="closePopup()">Close</button>
+    </div>
 
-        
-<div>
-Period Number
-</div>
+    <script>
+        const resultsArray = ["SMALL", "BIG","SMALL","BIG","SMALL"];
+        let lastPeriod = "";
+        let intervalId;
 
-        
-<div id="periodNumber">
-20241114100010479
-</div>
+        // Function to format time
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')} : ${String(remainingSeconds).padStart(2, '0')}`;
+        }
 
-    
-</div>
+        function startTimer() {
+            intervalId = setInterval(() => {
+                const now = new Date();
+                const seconds = now.getUTCSeconds();
+                const remainingSeconds = 30 - (seconds % 30);
+                const minutes = now.getUTCMinutes();
+                const totalMinutes = now.getUTCHours() * 60 + minutes;
 
+                // Generate the period number based on the provided logic
+                const periodNumber = new Date().toISOString().slice(0, 10).replace(/-/g, '') +
+                    "30" + (1 + totalMinutes * 2 + (seconds >= 30 ? 1 : 0));
 
-    
-<div class="box result-update" id="currentResultContainer">
+                document.getElementById("periodDisplay").textContent = `Period: ${periodNumber}`;
+                document.getElementById("timerDisplay").textContent = formatTime(remainingSeconds);
 
-        
-<div>
-Current Result
-</div>
+                // Show result when period number changes
+                if (remainingSeconds === 30) {
+                    showNewResult(periodNumber);
+                }
+            }, 1000); // Update every second
+        }
 
-        
-<div id="currentResult">
-Waiting....
-</div>
-
-    
-</div>
-
-
-    
-<div class="box">
-
-        
-<div>
-Timer
-</div>
-
-        
-<div id="timer">
-00:04
-</div>
-
-    
-</div>
-
-
-    
-<div class="history-box">
-
-        
-<div>
-History
-</div>
-
-        
-<ul id="history" class="history-list">
-
-</ul>
-
-    
-</div>
-
-
-</div>
-
-
-
-<script>
-
-    const periodNumberElement = document.getElementById('periodNumber');
-    const timerElement = document.getElementById('timer');
-    const currentResultElement = document.getElementById('currentResult');
-    const currentResultContainer = document.getElementById('currentResultContainer');
-    const historyElement = document.getElementById('history');
-
-    // Fixed sequence of results
-    const results = [
-        'SMALL', 'SMALL', 'SMALL', 'BIG', 'GREEN', 'SMALL', 'GREEN', 'BIG', 'SMALL', 'SMALL', 
-        'RED', 'BIG', 'RED', 'GREEN', 'SMALL', 'SMALL', 'RED', 'SMALL', 'GREEN', 'BIG', 'SMALL', 
-        'GREEN', 'SMALL', 'SMALL', 'SMALL', 'BIG', 'BIG', 'BIG', 'GREEN', 'BIG'
-    ];
-
-    let lastDisplayedPeriod = -1;
-    let firstPeriodDisplayed = false;
-    let resultIndex = 0; // To keep track of which result to show next
-
-    function updatePeriodAndResult() {
-        const now = new Date();
-        const utcYear = now.getUTCFullYear();
-        const utcMonth = String(now.getUTCMonth()   1).padStart(2, '0');
-        const utcDay = String(now.getUTCDate()).padStart(2, '0');
-        const utcHours = now.getUTCHours();
-        const utcMinutes = now.getUTCMinutes();
-        const seconds = now.getUTCSeconds();
-        const remainingSeconds = 60 - seconds;
-
-        // Calculate period number for each 1-minute interval
-        const totalMinutes = utcHours * 60   utcMinutes;
-        const periodNumber = 10001   totalMinutes;
-        const periodString = `${utcYear}${utcMonth}${utcDay}1000${periodNumber}`;
-
-        // Update period number display
-        periodNumberElement.textContent = periodString;
-
-        // Show a result only once per period change
-        if (periodNumber !== lastDisplayedPeriod) {
-            lastDisplayedPeriod = periodNumber;
-
-            // Avoid showing a result on the very first load
-            if (firstPeriodDisplayed) {
-                // Get the next result in the sequence
-                const result = results[resultIndex];
-                resultIndex = (resultIndex   1) % results.length; // Loop through the results
-
-                currentResultElement.textContent = result;
-                currentResultContainer.classList.remove('result-update'); // Reset animation
-                void currentResultContainer.offsetWidth; // Trigger reflow for animation reset
-                currentResultContainer.classList.add('result-update');
-
-                // Add result to history
-                const historyItem = document.createElement('li');
-                historyItem.className = 'history-item';
-
-                const periodDiv = document.createElement('span');
-                periodDiv.textContent = periodString;
-
-                const resultDiv = document.createElement('span');
-                resultDiv.textContent = result;
-
-                historyItem.appendChild(periodDiv);
-                historyItem.appendChild(resultDiv);
-                historyElement.prepend(historyItem);
-            } else {
-                // Mark that the first period display is done
-                firstPeriodDisplayed = true;
+        function showNewResult(periodNumber) {
+            if (lastPeriod !== periodNumber) {
+                lastPeriod = periodNumber;
+                const result = resultsArray[Math.floor(Math.random() * resultsArray.length)];
+                document.getElementById("resultDisplay").textContent = `Result: ${result}`;
+                addToHistory(periodNumber, result);
+                showPopup(periodNumber, result); // Show popup with result
             }
         }
 
-        // Update timer display
-        const secondsDisplay = remainingSeconds.toString().padStart(2, '0');
-        timerElement.textContent = `00:${secondsDisplay}`;
-    }
+        function addToHistory(period, result) {
+            const historyList = document.getElementById("historyList");
+            const historyItem = document.createElement("div");
+            historyItem.className = "history-item";
+            historyItem.textContent = `Period: ${period} - Result: ${result}`;
+            historyList.appendChild(historyItem);
+            if (historyList.childElementCount > 10) {
+                historyList.removeChild(historyList.firstChild); // Limit history to last 10 entries
+            }
+        }
 
-    setInterval(updatePeriodAndResult, 1000); // Update every second
+        function showPopup(period, result) {
+            const popupBody = document.getElementById("popupBody");
+            popupBody.innerHTML = `<tr><td>${period}</td><td>${result}</td></tr>`;
+            document.getElementById("resultPopup").style.display = 'block';
+        }
 
-</script>
+        function closePopup() {
+            document.getElementById("resultPopup").style.display = 'none';
+        }
 
-
-
-
+        // Start the timer when the window loads
+        window.onload = function() {
+            startTimer();
+        };
+    </script>
 
 </body>
-
 </html>
